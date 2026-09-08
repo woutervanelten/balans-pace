@@ -5,12 +5,10 @@ esphome:
   name_add_mac_suffix: false
 
 esp32:
-  variant: esp32
+  board: esp32-s3-devkitc-1
+  variant: esp32s3
   framework:
     type: esp-idf
-    advanced:
-      minimum_chip_revision: "3.1" 
-      sram1_as_iram: true
 
 # Enable logging
 logger:
@@ -41,32 +39,12 @@ web_server:
 #  ota: False
   local: True
 
-# Set pins required for LilyGo T-CAN485 board
-output:
-  - platform: gpio
-    id: ENABLE_PIN # Enable the chip
-    pin:
-      number: GPIO19
-      inverted: true
-
-  - platform: gpio
-    id: SE_PIN # Enable autodirection
-    pin:
-      number: GPIO17
-      inverted: true
-
-  - platform: gpio
-    id: ENABLE_5V_PIN # Enable 5V pin for RS485 chip
-    pin:
-      number: GPIO16
-      inverted: true
-
 # Configure UART
 uart:
   id: uart_0
   baud_rate: 9600
-  tx_pin: GPIO22
-  rx_pin: GPIO21
+  tx_pin: GPIO17
+  rx_pin: GPIO18
   debug:
     direction: BOTH
     dummy_receiver: false
@@ -74,15 +52,15 @@ uart:
 external_components:
   - source:
       type: git
-      url: https://github.com/www0xx/balans-pace
+      url: https://github.com/woutervanelten/balans-pace
     components: [ pace_bms ]
-    refresh: 1s
+    refresh: 1d
 
 pace_bms:
   - id: master_bms
     address: 2
     uart_id: uart_0
-#    flow_control_pin: GPIO18
+    flow_control_pin: GPIO21
     update_interval: 10s
     request_throttle: 50ms
     response_timeout: 6000ms
