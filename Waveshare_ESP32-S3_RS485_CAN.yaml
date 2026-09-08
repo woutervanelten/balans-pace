@@ -70,7 +70,6 @@ pace_bms:
     slave_query_mode: RELAY
     rx_buffer_size: 2048
 
-
   - id: slave_bms_3
     address: 3
     type: SLAVE
@@ -80,8 +79,16 @@ pace_bms:
     address: 4
     type: SLAVE
     master_bms_id: master_bms
+
+  - id: slave_bms_5
+    address: 5
+    type: SLAVE
+    master_bms_id: master_bms
     
 sensor:
+  # ==========================================
+  # BMS 1 (Master - Adres 2)
+  # ==========================================
   - platform: pace_bms
     pace_bms_id: master_bms
     total_voltage:
@@ -156,6 +163,9 @@ sensor:
     protection_status_value_2:
       name: "BMS1 Protection2 Raw"
 
+  # ==========================================
+  # BMS 2 (Slave - Adres 3)
+  # ==========================================
   - platform: pace_bms
     pace_bms_id: slave_bms_3
     total_voltage:
@@ -230,6 +240,9 @@ sensor:
     protection_status_value_2:
       name: "BMS2 Protection2 Raw"
 
+  # ==========================================
+  # BMS 3 (Slave - Adres 4)
+  # ==========================================
   - platform: pace_bms
     pace_bms_id: slave_bms_4
     total_voltage:
@@ -304,7 +317,87 @@ sensor:
     protection_status_value_2:
       name: "BMS3 Protection2 Raw"
 
+  # ==========================================
+  # BMS 4 (Slave - Adres 5)
+  # ==========================================
+  - platform: pace_bms
+    pace_bms_id: slave_bms_5
+    total_voltage:
+      name: "BMS4 Total Voltage"
+    current:
+      name: "BMS4 Current"
+    power:
+      name: "BMS4 Power"
+    state_of_charge:
+      name: "BMS4 SOC"
+    full_capacity:
+      name: "BMS4 Full Capacity"
+    min_cell_voltage:
+      name: "BMS4 Min Cell Voltage"
+    max_cell_voltage:
+      name: "BMS4 Max Cell Voltage"
+    avg_cell_voltage:
+      name: "BMS4 Avg Cell Voltage"
+    max_cell_differential:
+      name: "BMS4 Max Cell Differential"
+    temperature_01:
+      name: "BMS4 Temperatuur 1"
+    temperature_02:
+      name: "BMS4 Temperatuur 2"
+    temperature_03:
+      name: "BMS4 Temperatuur 3"
+    temperature_04:
+      name: "BMS4 Temperatuur 4"
+    temperature_05:
+      name: "BMS4 Environment Temperature"
+    cell_voltage_01:
+      name: "BMS4 Cel 01 Voltage"
+    cell_voltage_02:
+      name: "BMS4 Cel 02 Voltage"
+    cell_voltage_03:
+      name: "BMS4 Cel 03 Voltage"
+    cell_voltage_04:
+      name: "BMS4 Cel 04 Voltage"
+    cell_voltage_05:
+      name: "BMS4 Cel 05 Voltage"
+    cell_voltage_06:
+      name: "BMS4 Cel 06 Voltage"
+    cell_voltage_07:
+      name: "BMS4 Cel 07 Voltage"
+    cell_voltage_08:
+      name: "BMS4 Cel 08 Voltage"
+    cell_voltage_09:
+      name: "BMS4 Cel 09 Voltage"
+    cell_voltage_10:
+      name: "BMS4 Cel 10 Voltage"
+    cell_voltage_11:
+      name: "BMS4 Cel 11 Voltage"
+    cell_voltage_12:
+      name: "BMS4 Cel 12 Voltage"
+    cell_voltage_13:
+      name: "BMS4 Cel 13 Voltage"
+    cell_voltage_14:
+      name: "BMS4 Cel 14 Voltage"
+    cell_voltage_15:
+      name: "BMS4 Cel 15 Voltage"
+    cell_voltage_16:
+      name: "BMS4 Cel 16 Voltage"
+    system_status_value:
+      name: "BMS4 System Status Raw"
+    fault_status_value:
+      name: "BMS4 Fault Status Raw"
+    balancing_status_value:
+      name: "BMS4 Balancing Status Raw"
+      id: bms4_balance_raw
+    protection_status_value_1:
+      name: "BMS4 Protection1 Raw"
+    protection_status_value_2:
+      name: "BMS4 Protection2 Raw"
+
 text_sensor:
+  # ==========================================
+  # Text Sensors - BMS 1
+  # ==========================================
   - platform: pace_bms
     pace_bms_id: master_bms
 #    raw_status:
@@ -332,6 +425,9 @@ text_sensor:
     configuration_status:
       name: "BMS1 Configuration Status"
 
+  # ==========================================
+  # Text Sensors - BMS 2
+  # ==========================================
   - platform: pace_bms
     pace_bms_id: slave_bms_3
 #    raw_status:
@@ -359,6 +455,9 @@ text_sensor:
     configuration_status:
       name: "BMS2 Configuration Status"
 
+  # ==========================================
+  # Text Sensors - BMS 3
+  # ==========================================
   - platform: pace_bms
     pace_bms_id: slave_bms_4
 #    raw_status:
@@ -385,11 +484,43 @@ text_sensor:
       name: "BMS3 Balancing Status"
     configuration_status:
       name: "BMS3 Configuration Status"
+      
+  # ==========================================
+  # Text Sensors - BMS 4
+  # ==========================================
+  - platform: pace_bms
+    pace_bms_id: slave_bms_5
+    warning_status:
+      name: "BMS4 Warning Status"
+    protection_status:
+      name: "BMS4 Protection Status"
+    fault_status:
+      name: "BMS4 Fault Status"
+    system_status:
+      name: "BMS4 System Status"
+      filters:
+        - lambda: |
+            std::string out = x;
+            for (auto& token : {"DFET On; ", "CFET On; ", "DFET On", "CFET On"}) {
+              auto pos = out.find(token);
+              if (pos != std::string::npos) out.erase(pos, strlen(token));
+            }
+            while (out.size() >= 2 && out.substr(out.size()-2) == "; ")
+              out.erase(out.size()-2);
+            return out;
+    balancing_status:
+      name: "BMS4 Balancing Status"
+    configuration_status:
+      name: "BMS4 Configuration Status"
 
+  # ==========================================
+  # Template Sensors: Decodeer actieve cellen
+  # ==========================================
   - platform: template
     name: "BMS1 Balancing Cells"
     update_interval: 5s
     lambda: |-
+      if (std::isnan(id(bms1_balance_raw).state)) return {"Wachten op data..."};
       uint16_t bal = (uint16_t) id(bms1_balance_raw).state;
       if (bal == 0) return {"Balancing: geen"};
       std::string out = "Balancing: cellen ";
@@ -407,6 +538,7 @@ text_sensor:
     name: "BMS2 Balancing Cells"
     update_interval: 5s
     lambda: |-
+      if (std::isnan(id(bms2_balance_raw).state)) return {"Wachten op data..."};
       uint16_t bal = (uint16_t) id(bms2_balance_raw).state;
       if (bal == 0) return {"Balancing: geen"};
       std::string out = "Balancing: cellen ";
@@ -424,6 +556,7 @@ text_sensor:
     name: "BMS3 Balancing Cells"
     update_interval: 5s
     lambda: |-
+      if (std::isnan(id(bms3_balance_raw).state)) return {"Wachten op data..."};
       uint16_t bal = (uint16_t) id(bms3_balance_raw).state;
       if (bal == 0) return {"Balancing: geen"};
       std::string out = "Balancing: cellen ";
@@ -435,5 +568,23 @@ text_sensor:
           first = false;
         }
       }
-      return {out};    
-    
+      return {out};
+
+  - platform: template
+    name: "BMS4 Balancing Cells"
+    update_interval: 5s
+    lambda: |-
+      if (std::isnan(id(bms4_balance_raw).state)) return {"Wachten op data..."};
+      uint16_t bal = (uint16_t) id(bms4_balance_raw).state;
+      if (bal == 0) return {"Balancing: geen"};
+      std::string out = "Balancing: cellen ";
+      bool first = true;
+      for (int i = 0; i < 16; i++) {
+        if (bal & (1 << i)) {
+          if (!first) out += ", ";
+          out += std::to_string(i + 1);
+          first = false;
+        }
+      }
+      return {out};
+      
