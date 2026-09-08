@@ -1,4 +1,5 @@
-# Handleiding: BMS uitlezen in Home Assistant met een LilyGO T-CAN485 via de RS485 poort
+# Handleiding: BMS uitlezen in Home Assistant met een WaveShare ESP32-S3 RS485 CAN Communicator via de RS485 poort
+Dit is een fork van https://github.com/www0xx/balans-pace
 
 Het is mogelijk om de BMS van elke individuele accu uit te lezen in Home Assistant. Hiervoor heb je een ESP32 nodig die wordt aangesloten op de RS485-poort van de ‘Master’-accu.
 
@@ -8,21 +9,19 @@ Voor de LilyGO T-CAN485 is inmiddels, dankzij @fenrir en @paQ , een kant-en-klar
 
 ## Vereisten
 - Een Home Assistant-installatie met HACS. Deze handleiding gaat uit van HA OS. Bij Home Assistant Container zijn extra stappen nodig; die vallen buiten deze handleiding.
-- LilyGO T-CAN485. Deze is verkrijgbaar via AliExpress, maar ook voor een schappelijke prijs bij een Nederlandse webshop:
-https://www.tinytronics.n...pment-board-can-bus-rs485
+- WaveShare ESP32-S3 RS485 CAN Communicator. Deze is verkrijgbaar via AliExpress en Amazon.
 - Ethernetkabel die kapot geknipt mag worden, bij voorkeur met vaste kern/solid copper.
-- USB-adapter en USB-C-kabel voor de voeding van de LilyGO.
+- USB-adapter en USB-C-kabel voor de voeding. Of een Din-rail DC voeding. Ik heb zelf een 24V 35W 1din voeding van €10,- bij Amazon meebesteld.
 - USB-kabel die data ondersteunt, dus niet alleen laden.
 
 ## Stap 1: Voorbereiding
-1. Verbind de LilyGO T-CAN485 met een USB-kabel met je computer. Let erop dat de kabel ook data ondersteunt en niet alleen stroom.
+1. Verbind de WaveShare met een USB-kabel met je computer. Let erop dat de kabel ook data ondersteunt en niet alleen stroom.
 2. Gebruik Google Chrome of Microsoft Edge. Deze browsers ondersteunen WebUSB, wat nodig is om direct vanuit de browser te flashen. Gebruik dus geen Firefox.
 3. Ga in Home Assistant naar Instellingen --> Apps en installeer de app ESPHome Device Builder.
 4. Ga in Home Assistant naar HACS en installeer Mushroom en apexcharts-card.
 
 ## Stap 2: De configuratie downloaden en klaarzetten
-1. Ga naar de GitHub-pagina van het project en download het bestand `LilyGo_TCAN485.yaml`:
-https://github.com/www0xx.../main/LilyGo_TCAN485.yaml
+1. Ga naar de GitHub-pagina van het project en download het bestand ****
 
 2. Ga in Home Assistant naar ESPHome Builder en klik rechtsboven op Secrets.
 
@@ -47,28 +46,28 @@ https://www.cryptool.org/en/cto/openssl/
 
 ## Stap 3: Configuratie flashen
 1. Ga in Home Assistant naar ESPHome Builder en klik rechtsonder op New Device.
-2. Klik op Import from file en upload het bestand `LilyGo_TCAN485.yaml`.
+2. Klik op Import from file en upload het bestand ****.
 3. Kies daarna voor de optie Plug into this computer.
 4. Selecteer in het pop-upmenu linksboven de juiste COM-/serialpoort. Vaak is er maar één beschikbaar; in dat geval is de standaardkeuze meestal de juiste.
 5. Klik op Install. Dit duurt ongeveer 2 tot 5 minuten, omdat er nog verschillende packages gedownload moeten worden.
 
 Tip: tijdens het flashen zie je een gekleurde LED branden. Nadat het flashen klaar is, gaat de LED uit en blijft deze uit. De LED wordt in de huidige firmware niet gebruikt.
 
-## Stap 4: LilyGO toevoegen aan Home Assistant
+## Stap 4: WaveShare toevoegen aan Home Assistant
 1. Ga in Home Assistant naar Instellingen --> Integraties. Als het goed is, staat daar nu een ontdekte ESPHome-integratie met de naam pace_bms. Voeg deze toe met de standaardnaam.
 2. Ga in Home Assistant naar Instellingen --> Dashboards en maak een nieuw dashboard aan. Kies voor Leeg nieuw dashboard.
 3. Ga naar het zojuist aangemaakte lege dashboard. Klik rechtsboven op het potloodje, daarna op de drie puntjes en kies Ruwe configuratie-editor.
 4. Plak hierin de inhoud van dit bestand en sla het dashboard op:
-https://github.com/www0xx/balans-pace/blob/main/LilyGo_TCAN485.yaml
+https://github.com/www0xx/balans-pace/blob/main/WaveShare_TCAN485.yaml
 
-## Stap 5: LilyGO aansluiten op de ‘Master’-accu
+## Stap 5: WaveShare aansluiten op de ‘Master’-accu
 1. Pak een ethernetkabel en knip aan één kant de stekker eraf.
 2. Strip de kabel. Zorg dat je het oranje aderpaar, dus oranje en oranje-wit, én groen-wit overhoudt. De overige aders mag je afknippen.
-3. Maak deze drie aders blank en schroef ze in het connectorblok van de LilyGO op de RS485-poort. Let op: gebruik dus niet de CAN-poort. Sluit ze aan in deze volgorde:
+3. Maak deze drie aders blank en schroef ze in het connectorblok van de WaveShare op de RS485-poort. Let op: gebruik dus niet de CAN-poort. Sluit ze aan in deze volgorde:
+   A+: Effen oranje (RS_A)
+   B- : Gestreept oranje	(RS_B)
 
-<img width="1568" height="502" alt="image" src="https://github.com/user-attachments/assets/6977c9e6-fba2-4235-b2dd-e768ce2bab41" />
-
-4. Sluit de ethernetstekker aan de andere kant van de kabel aan op de RS485-poort van de Master-accu van je Balans Batterij.
+5. Sluit de ethernetstekker aan de andere kant van de kabel aan op de RS485-poort van de Master-accu van je Balans Batterij.
 
 De Master-accu is te herkennen aan de gele netwerkkabel die naar de Deye gaat. Dit is vaak de bovenste accu van de stack:
 
@@ -77,9 +76,9 @@ De Master-accu is te herkennen aan de gele netwerkkabel die naar de Deye gaat. D
 Plug de kabel direct naast de al aangesloten gele ethernetkabel in:
 <img width="1048" height="571" alt="image" src="https://github.com/user-attachments/assets/b3f8ef42-9e83-4948-b1e4-b651bf46e846" />
 
-5. Voorzie de LilyGO nu van stroom via de USB-C-poort. Na een paar seconden zou de LilyGO verbinding moeten maken met je wifi-netwerk.
+5. Voorzie de WaveShare nu van stroom via de USB-C-poort. Na een paar seconden zou de LilyGO verbinding moeten maken met je wifi-netwerk.
 
-De data zou nu binnen moeten komen op zowel de interne webserver van de LilyGO als in het dashboard dat je zojuist hebt aangemaakt. De interne webserver is bereikbaar via http://pace_bms.local/
+De data zou nu binnen moeten komen op zowel de interne webserver van de WaveShare als in het dashboard dat je zojuist hebt aangemaakt. De interne webserver is bereikbaar via http://pace_bms.local/
 
 # Troubleshooting
 
@@ -104,7 +103,7 @@ Heb je meer accu’s dan de standaard stack van 3, of staan je dipswitches ander
 
 ## Home Assistant kan geen sensoren/entiteiten vinden in het dashboard
 
-Controleer eerst of je data ziet binnenkomen op de interne webserver van de LilyGO: http://pace_bms.local/
+Controleer eerst of je data ziet binnenkomen op de interne webserver van de WaveShare: http://pace_bms.local/
 
 Als daar wel data binnenkomt, heb je waarschijnlijk de naam van pace_bms aangepast bij het toevoegen van de ESPHome-integratie aan Home Assistant, zie stap 4.
 
@@ -121,5 +120,6 @@ en met name:
 [Speedy-Andre](https://tweakers.net/gallery/50867/),
 [Wolly](https://tweakers.net/gallery/19172/),
 [Rick Astley](https://tweakers.net/gallery/298667/) &
-[fenrir](https://tweakers.net/gallery/45748/)
+[fenrir](https://tweakers.net/gallery/45748/) &
+[www0xx](https://github.com/www0xx)
 
